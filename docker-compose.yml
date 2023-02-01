@@ -2,12 +2,16 @@ version: "3.8"
 
 services:
   php:
+    image: backend_php
     build:
       context: .
       target: app_php
       args:
         SYMFONY_VERSION: ${SYMFONY_VERSION:-}
         STABILITY: ${STABILITY:-stable}
+    container_name: backend_php
+    networks:
+      - backend
     restart: unless-stopped
     volumes:
       - php_socket:/var/run/php
@@ -25,9 +29,13 @@ services:
       MERCURE_JWT_SECRET: ${CADDY_MERCURE_JWT_SECRET:-!ChangeThisMercureHubJWTSecretKey!}
 
   caddy:
+    image: backend_caddy
     build:
       context: .
       target: app_caddy
+    container_name: backend_caddy
+    networks:
+      - backend
     depends_on:
       - php
     environment:
@@ -54,6 +62,11 @@ services:
       - target: 443
         published: ${HTTP3_PORT:-443}
         protocol: udp
+
+networks:
+  backend:
+    name: backend
+    driver: bridge
 
 # Mercure is installed as a Caddy module, prevent the Flex recipe from installing another service
 ###> symfony/mercure-bundle ###
