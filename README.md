@@ -14,6 +14,16 @@ Just send a POST request to the `publishMsg` endpoint with the `message` propert
 3. Open `https://localhost` in your web browser and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
 4. Run `docker compose down --remove-orphans` to stop the Docker containers.
 
+## Demo Endpoints
+All endpoints are reachable from localhost.
+Request body has to be JSON.
+
+| Endpoint      | Method | Request Body Parameters | Description                 |
+|---------------|--------|-------------------------|-----------------------------|
+| /             | GET    | -                       | phpinfo                     |
+| /publishMsg   | POST   | message                 | Publish and store a message | 
+| /getStoredMsg | GET    | -                       | Get the last 10 messages    |
+
 ## TLS Certificates
 With a standard installation, the authority used to sign certificates generated in the Caddy container is not trusted by your local machine.
 You must add the authority to the trust store of the host :
