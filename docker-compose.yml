@@ -22,7 +22,7 @@ services:
       start_period: 30s
     environment:
       # Run "composer require symfony/orm-pack" to install and configure Doctrine ORM
-      DATABASE_URL: postgresql://${POSTGRES_USER:-app}:${POSTGRES_PASSWORD:-!ChangeMe!}@database:5432/${POSTGRES_DB:-app}?serverVersion=${POSTGRES_VERSION:-14}
+      DATABASE_URL: ${DATABASE_URL}
       # Run "composer require symfony/mercure-bundle" to install and configure the Mercure integration
       MERCURE_URL: ${CADDY_MERCURE_URL:-http://caddy/.well-known/mercure}
       MERCURE_PUBLIC_URL: https://${SERVER_NAME:-localhost}/.well-known/mercure
@@ -63,6 +63,26 @@ services:
         published: ${HTTP3_PORT:-443}
         protocol: udp
 
+###> doctrine/doctrine-bundle ###
+  database:
+    image: backend_db
+    build:
+      context: .
+      target: app_db
+    container_name: backend_db
+    networks:
+      - backend
+    # Open port to access the database from outside the container  
+    ports:
+      - "127.0.0.1:1433:1433"
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_SA_PASSWORD: ${DOCKER_MSSQL_SA_PASSWORD}
+      MSSQL_PID: "Express"
+    volumes:
+      - database_data:/var/opt/mssql
+###< doctrine/doctrine-bundle ###
+
 networks:
   backend:
     name: backend
@@ -78,3 +98,7 @@ volumes:
   caddy_config:
 ###> symfony/mercure-bundle ###
 ###< symfony/mercure-bundle ###
+
+###> doctrine/doctrine-bundle ###
+  database_data:
+###< doctrine/doctrine-bundle ###

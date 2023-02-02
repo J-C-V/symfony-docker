@@ -19,7 +19,7 @@ RUN xcaddy build \
 	--with github.com/dunglas/vulcain/caddy
 
 # Prod image
-FROM php:8.2-fpm-alpine AS app_php
+FROM php:8.1-fpm-alpine AS app_php
 
 # Allow to use development versions of Symfony
 ARG STABILITY="stable"
@@ -51,6 +51,8 @@ RUN set -eux; \
     	zip \
     	apcu \
 		opcache \
+		sqlsrv \
+		pdo_sqlsrv \
     ;
 
 ###> recipes ###
@@ -126,3 +128,30 @@ WORKDIR /srv/app
 COPY --from=app_caddy_builder --link /usr/bin/caddy /usr/bin/caddy
 COPY --from=app_php --link /srv/app/public public/
 COPY --link docker/caddy/Caddyfile /etc/caddy/Caddyfile
+
+# SQL Server image
+FROM mcr.microsoft.com/mssql/server:2022-latest AS app_db
+
+# Change to root because the service starts normally as user mssql
+USER root
+
+# Providing the required access to the mssql server folders
+RUN mkdir -p -m 770 /var/opt/mssql && chown -R mssql. /var/opt/mssql
+
+# Create app directory
+RUN mkdir -p /srv/app
+WORKDIR /srv/app
+
+# Copy initialization scripts
+COPY --chown=mssql docker/sql-server/entrypoint.sh entrypoint.sh
+COPY --chown=mssql docker/sql-server/run-init.sh run-init.sh
+COPY --chown=mssql docker/sql-server/create-database.sql create-database.sql
+
+# Grant permissions for the db initialization script to be executable
+RUN chmod +x /srv/app/run-init.sh
+
+# Change back to non root user
+USER mssql
+
+# Run Microsoft SQl Server and initialization script (at the same time)
+CMD ["/bin/bash", "./entrypoint.sh"]
