@@ -1,11 +1,12 @@
-# Symfony Docker Demo
+# Symfony Docker Backend Demo
 Based on Dunglas' symfony-docker project: https://github.com/dunglas/symfony-docker with added Microsoft SQL Server support.
 There is no stable Microsoft SQL Server PHP driver support for PHP 8.2 yet, so the template is currently using PHP 8.1.
 Initial Microsoft SQL Server setup is based on
 https://github.com/twright-msft/mssql-node-docker-demo-app.
 
 This demo showcases how to utilize the [Mercure protocol](https://symfony.com/doc/current/mercure.html) to push data
-in real time to clients.
+in real time to clients, as well as persisting data to a Microsoft SQL Server database using Doctrine.
+Just send a POST request to the `publishMsg` endpoint with the `message` property in the request body to publish it to all subscribers and save it to the database.
 
 ## Getting Started
 1. If not already done, [install Docker Compose](https://docs.docker.com/compose/install/) (v2.10+)
