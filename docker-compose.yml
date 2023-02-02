@@ -79,6 +79,7 @@ services:
       ACCEPT_EULA: "Y"
       MSSQL_SA_PASSWORD: ${DOCKER_MSSQL_SA_PASSWORD}
       MSSQL_PID: "Express"
+    restart: unless-stopped
     volumes:
       - database_data:/var/opt/mssql
 ###< doctrine/doctrine-bundle ###
