@@ -20,7 +20,6 @@ class Message
     private ?string $message = null;
 
     #[ORM\Column]
-    #[Context([DateTimeNormalizer::FORMAT_KEY => 'Y.m.d h:i'])]
     private ?\DateTimeImmutable $postedAt = null;
 
     public function getId(): ?int
