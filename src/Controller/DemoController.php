@@ -12,7 +12,6 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Mercure\HubInterface;
 use Symfony\Component\Mercure\Update;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Serializer\Normalizer\DateTimeNormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\SerializerInterface;
 
@@ -30,16 +29,18 @@ class DemoController extends AbstractController
     }
 
     /**
-     * Simple mercure and doctrine demo endpoint.
-     * Publishes the sent message to every subscriber.
+     * Simple Mercure and Doctrine demo endpoint.
+     * Publishes a message to every subscriber.
      *
      * @param Request $request
      * @param HubInterface $hub
      * @return JsonResponse
      */
-    #[Route('/publishMsg', name: 'publishMsg', methods: ['POST'])]
+    #[Route('/messages', name: 'messagesPost', methods: ['POST'])]
     public function publishMsg(Request $request, ManagerRegistry $doctrine, HubInterface $hub): JsonResponse
     {
+        $topicURL = $this->getParameter('mercure.topics');
+
         try {
             // Validate request body
             $data = json_decode($request->getContent());
@@ -61,12 +62,13 @@ class DemoController extends AbstractController
 
             // Publish update
             $update = new Update(
-                'https://localhost/subscribeMsg',
+                $topicURL . '/messages',
                 json_encode([
-                    'message' => $msg
+                    'id' => $message->getId(),
+                    'message' => $message->getMessage(),
+                    'postedAt' => $message->getPostedAt()
                 ])
             );
-
             $hub->publish($update);
 
             // Response
@@ -77,20 +79,23 @@ class DemoController extends AbstractController
         } catch (\Exception $err) {
             return $this->json([
                 'success' => false,
-                'error' => $err->getMessage()
+                'error' => [
+                    'code' => $err->getCode(),
+                    'message' => $err->getMessage()
+                ]
             ]);
         }
     }
 
     /**
-     * Simple doctrine endpoint.
+     * Simple Doctrine endpoint.
      * Get stored messages.
      *
      * @param ManagerRegistry $doctrine
      * @return JsonResponse
      */
-    #[Route('/getStoredMsg', name: 'getStoredMsg', methods: ['GET'])]
-    public function getStoredMsg(ManagerRegistry $doctrine, SerializerInterface $serializer): Response
+    #[Route('/messages', name: 'messagesGet', methods: ['GET'])]
+    public function getMsgs(ManagerRegistry $doctrine, SerializerInterface $serializer): Response
     {
         try {
             // Get data
@@ -102,7 +107,7 @@ class DemoController extends AbstractController
             ];
 
             // Serialize data
-            $data = $serializer->serialize($data, 'json', [ObjectNormalizer::class, DateTimeNormalizer::class]);
+            $data = $serializer->serialize($data, 'json', [ObjectNormalizer::class]);
 
             // Response
             $response = new Response($data);
@@ -112,7 +117,10 @@ class DemoController extends AbstractController
         } catch (\Exception $err) {
             return $this->json([
                 'success' => false,
-                'error' => $err->getMessage()
+                'error' => [
+                    'code' => $err->getCode(),
+                    'message' => $err->getMessage()
+                ]
             ]);
         }
     }
