@@ -43,7 +43,7 @@ chain to validate trust](https://learn.microsoft.com/en-us/dotnet/api/system.dat
 (See also [this question on stackoverflow.com](https://stackoverflow.com/a/71735233)).
 
 ## Accessing the Demo from an External Device
-The external device has to be on the same local network without valid certificates. Be aware that this bypasses HTTPS 
+The external device has to be on the same local network. Be aware that this bypasses HTTPS 
 security mechanisms because certificates aren't validated. Only use that for testing in local development!
 
 The demo has to be configured as such:
