@@ -50,6 +50,7 @@ The demo has to be configured as such:
 1. Set the server name to `https://` in`.env` to allow any https connection connect to the Caddy server.
 2. Set CORS options in `.env` to allow accessing it from another origin. This is normally your local host IP.
 3. Set `MERCURE_PUBLIC_URL` and `MERCURE_TOPIC_URL` in `.env` accordingly.
-4. Disable `verify_host` and `verify_peer` in `config/packages/framework.yaml`.
-5. Enable [on-demand TLS](https://caddyserver.com/docs/automatic-https#on-demand-tls) in `docker/caddy/Caddyfile`.
-6. Open your host IP on the external device and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
+4. Set `MERCURE_URL` to `https://caddy/.well-known/mercure`
+5. Disable `verify_host` and `verify_peer` in `config/packages/framework.yaml`.
+6. Enable [on-demand TLS](https://caddyserver.com/docs/automatic-https#on-demand-tls) in `docker/caddy/Caddyfile`.
+7. Open your host IP on the external device and [accept the auto-generated TLS certificate](https://stackoverflow.com/a/15076602/1352334)
