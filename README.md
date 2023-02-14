@@ -1,6 +1,7 @@
 # Symfony Docker SSE Demo (Backend)
-Based on [Dunglas' symfony-docker project](https://github.com/dunglas/symfony-docker) with added Microsoft SQL Server 
-support. There is no stable Microsoft SQL Server PHP driver support for PHP 8.2 yet, so the template is currently using 
+This demo works in tandem with [VUE Docker SSE Demo](https://github.com/J-C-V/vue-docker-sse-demo). Based on 
+[Dunglas' symfony-docker project](https://github.com/dunglas/symfony-docker) with added Microsoft SQL Server support. 
+There is no stable Microsoft SQL Server PHP driver support for PHP 8.2 yet, so the template is currently using 
 PHP 8.1. Initial Microsoft SQL Server setup is based on https://github.com/twright-msft/mssql-node-docker-demo-app.
 
 This demo showcases how to utilize the [Mercure protocol](https://symfony.com/doc/current/mercure.html) to push data
