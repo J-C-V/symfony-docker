@@ -30,3 +30,11 @@ route {
     encode zstd gzip
     file_server
 }
+
+# Dynamically obtain a new certificate during the first TLS handshake
+#
+# Used to access the demo from an external device like a phone in a local network.
+# Do not do that in production if you don't know what you are doing!
+# tls internal {
+#     on_demand
+# }
