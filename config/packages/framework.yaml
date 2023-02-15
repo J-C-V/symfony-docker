@@ -18,13 +18,6 @@ framework:
     php_errors:
         log: true
 
-    # This is only for demo purposes to allow publishing Mercure messages over https without a real certificate.
-    # Do not do that in production if you don't know what you are doing!
-    # http_client:
-    #     default_options:
-    #         verify_host: false
-    #         verify_peer: false
-
 when@test:
     framework:
         test: true
